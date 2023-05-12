@@ -9,8 +9,9 @@ from tqdm import tqdm
 if __name__ == '__main__':
 
     # Edit your path
-    path_src = '/mnt/hdd1/db/wrinkle/AIIM_2023_Rev/crop_2/src'
-    path_dst = '/mnt/hdd1/db/wrinkle/AIIM_2023_Rev/crop_2/texture'
+    path_src = 'Wrinkle/DB/AIIM/Rev/src'
+    path_dst = 'Wrinkle/DB/AIIM/Rev/texture'
+
     if os.path.isdir(path_dst) == False:
         os.makedirs(path_dst)
 
@@ -27,6 +28,7 @@ if __name__ == '__main__':
         fns_dst = fns_src.replace(path_src, path_dst)
 
         img_src = cv2.imread(fns_src, cv2.IMREAD_GRAYSCALE)
+        img_src = cv2.resize(img_src, (640, 640))
         img_src = np.array(img_src, dtype=float)
         img_low = cv2.filter2D(img_src, -1, kernel2d)
         img_low = np.array(img_low, dtype=float)

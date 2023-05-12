@@ -36,17 +36,14 @@ if __name__ == '__main__':
     learning_rate = 0.01
     num_class = 2
 
-    len_h = 512
-    len_w = 512
-
-    path_tr_src = '/mnt/hdd1/db/Retinal/DRIVE/training/images_rename_png_584_584'
-    path_tr_lbl = '/mnt/hdd1/db/Retinal/DRIVE/training/1st_manual_rename_png_584_584_wds'
-
-    path_va_src = '/mnt/hdd1/db/Retinal/DRIVE/test/images_rename_png_584_584'
-    path_va_lbl = '/mnt/hdd1/db/Retinal/DRIVE/test/1st_manual_rename_png_584_584_wds'
+    # Edit your path
+    path_tr_src = 'Retina/DRIVE/training/images_rename_png_584_584'
+    path_tr_lbl = 'Retina/DRIVE/training/1st_manual_rename_png_584_584_wds'
+    path_va_src = 'Retina/DRIVE/test/images_rename_png_584_584'
+    path_va_lbl = 'Retina/DRIVE/test/1st_manual_rename_png_584_584_wds'
 
     max_pixel = 255
-    str_save = 'Rev_new_E200'
+    str_save = 'DRIVE_WDS_AGNET_ASPP'
 
     train_dataset = Dataset_album_DRIVE_AIIM_wds_strong_aug(path_src=path_tr_src, path_lbl=path_tr_lbl, b_aug=True, max_pixel=max_pixel)
     val_dataset = Dataset_album_DRIVE_AIIM_wds_strong_aug(path_src=path_va_src, path_lbl=path_va_lbl, b_aug=False, max_pixel=max_pixel)
@@ -63,18 +60,9 @@ if __name__ == '__main__':
                                                num_workers=2)
 
     unet = AG_Net_ASPP(n_classes=num_class, bn=True, BatchNorm=False).to(device)
-    # optimizer = torch.optim.Adam(unet.parameters(), lr=0.0015)
     params = add_weight_decay(unet, l2_value=0.0001)
     optimizer = torch.optim.Adam(params, learning_rate)
-    # optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, unet.parameters()), lr=learning_rate)
-    # lambda2 = lambda epoch: 0.99 ** epoch
-    # scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer=optimizer, lr_lambda=lambda2)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=num_epochs, eta_min=0.000001)
-
-    # NGPU = torch.cuda.device_count()
-    # unet = torch.nn.DataParallel(unet, device_ids=list(range(NGPU)))
-    # torch.multiprocessing.set_start_method('spawn')
-    # unet.to(device)
 
     loss_fn = torch.nn.BCELoss()
     f_sig = torch.nn.Sigmoid()
@@ -99,10 +87,6 @@ if __name__ == '__main__':
     EPS = 1e-12
     criterion = torch.nn.NLLLoss2d()
     for epoch in range(num_epochs):
-        # if (epoch % 10 == 0) and epoch != 0 and epoch < 400:
-        #     learning_rate /= 10
-        #     optimizer = torch.optim.Adam(unet.parameters(), lr=learning_rate)
-
         # Phase: train
         unet.train()
         batch_losses_all = []
@@ -143,8 +127,6 @@ if __name__ == '__main__':
             optimizer.zero_grad()
             loss_all.backward()
             optimizer.step()
-
-            # break
 
         epoch_loss_all = np.mean(batch_losses_all)
         epoch_loss_5 = np.mean(batch_losses_5)
@@ -232,14 +214,12 @@ if __name__ == '__main__':
         sensitivity = tp / (tp + fn)
         specificity = tn / (tn + fp)
         iou = tp / (tp + fp + fn)
-
-        #       % (epoch, jsi, accuracy, sensitivity, specificity))
         print('epoch %d: iou = %.04f\n' % (epoch, iou))
 
-        writer_iou.add_scalar('cIOU', iou, epoch)
+        writer_iou.add_scalar('iou', iou, epoch)
 
         # Save the best model
         if iou_max < iou:
             iou_max = iou
-            fns_check = '%s/unet_epoch_%d_IoU_%.4f.pth' % (path_save, epoch, iou)
+            fns_check = '%s/model_epoch_%d_IoU_%.4f.pth' % (path_save, epoch, iou)
             torch.save(unet.state_dict(), fns_check)

@@ -21,11 +21,11 @@ if __name__ == '__main__':
     val_batch_size = 2
     num_class = 2
 
-    path_ref = '/home/semin/outside/gpu1/Users/ksm/Wrinkle/DB/AIIM/Rev/5_fold/0'
-
-    path_src = '/mnt/hdd1/db/wrinkle/AIIM_2023_Rev/crop_2/src'
-    path_ttr = '/mnt/hdd1/db/wrinkle/AIIM_2023_Rev/crop_2/texture'
-    path_gnd = '/mnt/hdd1/db/wrinkle/AIIM_2023_Rev/crop_2/GT'
+    # Edit your path
+    path_ref = 'Wrinkle/DB/AIIM/Rev/6_fold/0'
+    path_src = 'Wrinkle/DB/AIIM/Rev/src'
+    path_ttr = 'Wrinkle/DB/AIIM/Rev/texture'
+    path_gnd = 'Wrinkle/DB/AIIM/Rev/GT'
 
     list_src = os.listdir(path_src)
     list_te = list()
@@ -39,7 +39,7 @@ if __name__ == '__main__':
     val_loader = torch.utils.data.DataLoader(dataset=val_dataset, batch_size=val_batch_size, shuffle=False, num_workers=2)
 
     model = UNet_texture_front_ds(4, 2).to(device)
-    fns_mdl = '/mnt/nvme/pycharm/AIIM/save_model/Task_WDS_0/model_epoch_4_jsi_0.0327.pth'
+    fns_mdl = 'save_model/WRINKLE_WDS_0/model_epoch_184_jsi_0.4435.pth'
     model.load_state_dict(torch.load(fns_mdl), strict=True)
 
     softmax_2d = torch.nn.Softmax2d()

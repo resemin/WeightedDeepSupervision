@@ -7,9 +7,9 @@ from tqdm import tqdm
 if __name__ == '__main__':
 
     # Edit your path
-    path_src = '/mnt/hdd1/db/wrinkle/AIIM_2023_Rev/crop_2/texture'
-    path_pgt = '/mnt/hdd1/db/wrinkle/AIIM_2023_Rev/crop_2/pgt'
-    path_dst = '/mnt/hdd1/db/wrinkle/AIIM_2023_Rev/crop_2/GT'
+    path_src = 'Wrinkle/DB/AIIM/Rev/texture'
+    path_pgt = 'Wrinkle/DB/AIIM/Rev/pgt'
+    path_dst = 'Wrinkle/DB/AIIM/Rev/GT'
     if os.path.isdir(path_dst) == False:
         os.makedirs(path_dst)
 

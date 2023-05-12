@@ -33,17 +33,17 @@ if __name__ == '__main__':
     model_id = "1"
     agum_file = '1'
     num_epochs = 200
-    train_batch_size = 2
-    val_batch_size = 1
+    train_batch_size = 4
+    val_batch_size = 2
     learning_rate = 0.01
 
-    for step_f in range(0, 5):
+    for step_f in range(0, 6):
 
-        path_ref = '/home/semin/outside/gpu1/Users/ksm/Wrinkle/DB/AIIM/Rev/5_fold/%d' % step_f
-
-        path_src = '/mnt/hdd1/db/wrinkle/AIIM_2023_Rev/crop_2/src'
-        path_ttr = '/mnt/hdd1/db/wrinkle/AIIM_2023_Rev/crop_2/texture'
-        path_gnd = '/mnt/hdd1/db/wrinkle/AIIM_2023_Rev/crop_2/GT'
+        # Edit your path
+        path_ref = 'Wrinkle/DB/AIIM/Rev/6_fold/%d' % step_f
+        path_src = 'Wrinkle/DB/AIIM/Rev/src'
+        path_ttr = 'Wrinkle/DB/AIIM/Rev/texture'
+        path_gnd = 'Wrinkle/DB/AIIM/Rev/GT'
 
         list_src = os.listdir(path_src)
 
@@ -68,7 +68,7 @@ if __name__ == '__main__':
                                                  batch_size=val_batch_size, shuffle=False,
                                                  num_workers=2)
 
-        str_log = 'Task_WDS_%d' % step_f
+        str_log = 'WRINKLE_WDS_%d' % step_f
         path_save = 'save_model/%s' % str_log
         if os.path.isdir(path_save) == False:
             os.makedirs((path_save))
@@ -154,9 +154,7 @@ if __name__ == '__main__':
             y_score = []
             
             for step, (imgs, label_imgs, img_ttr, img_wds_2, img_wds_3, img_wds_4) in enumerate(tqdm(val_loader)):
-
-                # print(f'val_step : {step}')
-                with torch.no_grad():  # (corresponds to setting volatile=True in all variables, this is done during inference to reduce memory consumption)
+                with torch.no_grad():
                     imgs = Variable(imgs).to(device)
                     label_imgs = Variable(label_imgs.type(torch.LongTensor)).to(device)
                     img_ttr = Variable(img_ttr).to(device)
@@ -197,15 +195,8 @@ if __name__ == '__main__':
             epoch_loss = np.mean(batch_losses)
 
             jsi = metrics.jaccard_score(y_true_np, y_pred_np)            
-            # tn, fp, fn, tp = metrics.confusion_matrix(y_true_np, y_pred_np).ravel()
-            # accuracy = metrics.accuracy_score(y_true_np, y_pred_np)
-            # sensitivity = tp / (tp + fn)
-            # specificity = tn / (tn + fp)
-
             epoch_loss = np.mean(batch_losses)
             print('epoch %d: val loss = %.08f' % (epoch, epoch_loss_1))
-            # print('epoch %d: jsi = %.04f, acc = %.04f, sen = %.04f, spe = %.04f\n'
-            #       % (epoch, jsi, accuracy, sensitivity, specificity))
             print('epoch %d: jsi = %.04f\n' % (epoch, jsi))
             writer_loss_te.add_scalar('loss', epoch_loss, epoch)
             writer_loss_te_1.add_scalar('loss', epoch_loss_1, epoch)

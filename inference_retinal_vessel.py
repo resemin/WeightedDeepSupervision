@@ -33,15 +33,15 @@ if __name__ == '__main__':
     learning_rate = 0.01
     num_class = 2
 
-    path_va_src = '../../DB/DRIVE/test/images_rename_png_584_584'
-    path_va_lbl = '../../DB/DRIVE/test/1st_manual_rename_png_584_584'
+    path_va_src = 'Retina/DRIVE/test/images_rename_png_584_584'
+    path_va_lbl = 'Retina/DRIVE/test/manual_rename_png_584_584'
 
     max_pixel = 255
     val_dataset = Dataset_album_DRIVE_AIIM(path_src=path_va_src, path_lbl=path_va_lbl, b_aug=False, max_pixel=max_pixel)
     val_loader = torch.utils.data.DataLoader(dataset=val_dataset, batch_size=val_batch_size, shuffle=False, num_workers=4)
 
     unet = AG_Net(n_classes=num_class, bn=True, BatchNorm=False).to(device)
-    fns_mdl = '/home/semin/outside/gpu1/Users/ksm/Wrinkle/Code/agnet/save_model/Rev_new_E200/unet_epoch_181_cIOU_0.7036.pth'
+    fns_mdl = 'save_model/DRIVE_WDS_AGNET/model_epoch_181_IOU_0.7036.pth'
     unet.load_state_dict(torch.load(fns_mdl), strict=True)
 
     softmax_2d = torch.nn.Softmax2d()
