@@ -2,6 +2,8 @@
 
 This is a proto code for revision of Artificial Intelligence in Medicine
 
+We plan to re-upload the code after further modification
+
 The code consists of.
 
 - gen_texture.py: generate a texture map from image
