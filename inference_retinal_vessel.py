@@ -69,9 +69,9 @@ if __name__ == '__main__':
         y_score.append(score.reshape(-1))
         y_true.append(label_imgs_np.reshape(-1))
 
-        y_score_np = np.asarray(y_score).reshape(-1)
-        y_pred_np = y_score_np > 0.5
-        y_true_np = np.asarray(y_true).reshape(-1)
+    y_score_np = np.asarray(y_score).reshape(-1)
+    y_pred_np = y_score_np > 0.5
+    y_true_np = np.asarray(y_true).reshape(-1)
 
     tn, fp, fn, tp = sklearn.metrics.confusion_matrix(y_true_np, y_pred_np).ravel()
     accuracy = sklearn.metrics.accuracy_score(y_true_np, y_pred_np)
